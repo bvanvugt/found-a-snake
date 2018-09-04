@@ -34,13 +34,19 @@ def start():
 def move():
     data = bottle.request.json
 
-    # TODO: Do things with data
-    
-    directions = ['up', 'right']
-    direction = random.choice(directions)
+    board_max_x = data['board']['width']
+    board_max_y = data['board']['height']
 
-    print "Moving %s" % direction
-    return MoveResponse(direction)
+    head_coords = data['you']['body'][0]   
+
+    diff_x = board_max_x - head_coords['x']
+    diff_y = head_coords['y']
+
+    if diff_x > diff_y:
+        return MoveResponse('right')
+    if diff_y > diff_x:
+        return MoveResponse('up')
+    return MoveResponse(random.choice(['up', 'right']))
 
 
 @bottle.post('/end')
