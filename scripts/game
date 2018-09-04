@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+RESPONSE=`./engine create -c snake-config.json`
+ID=`echo "$RESPONSE" | jq -r '.ID'`
+./engine run -g $ID
+echo $ID
+sleep 1
+./engine replay -g $ID

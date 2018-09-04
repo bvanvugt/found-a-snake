@@ -1,0 +1,11 @@
+{
+    "width": 20,
+    "height": 20,
+    "food": 5,
+    "snakes": [
+        {
+            "name": "F-A-S",
+            "url": "http://127.0.0.1:8080"
+        }
+    ]
+}

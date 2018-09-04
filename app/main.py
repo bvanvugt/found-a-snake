@@ -36,7 +36,7 @@ def move():
 
     # TODO: Do things with data
     
-    directions = ['up', 'down', 'left', 'right']
+    directions = ['up', 'right']
     direction = random.choice(directions)
 
     print "Moving %s" % direction
