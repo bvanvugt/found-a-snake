@@ -34,9 +34,7 @@ def start():
 def move():
     data = bottle.request.json
 
-    board_max_x = data['board']['width']
-    board_max_y = data['board']['height']
-
+    life = data['you']['health']
     head_coords = data['you']['body'][0]
 
     up_coords = head_coords.copy()
@@ -50,6 +48,24 @@ def move():
 
     right_coords = head_coords.copy()
     right_coords['x'] = head_coords['x'] + 1
+
+    if life <= max(data['board']['width'], data['board']['height']):
+        print "TRY TO EAT!"
+        nearest_food_coords = get_nearest_food(head_coords, data['board'])
+        
+        if nearest_food_coords:
+            if nearest_food_coords['x'] < head_coords['x']:
+                if is_safe(head_coords['x'] - 1, head_coords['y'], data['board']):
+                    return MoveResponse('left')
+            elif nearest_food_coords['x'] > head_coords['x']:
+                if is_safe(head_coords['x'] + 1, head_coords['y'], data['board']):
+                    return MoveResponse('right')
+            elif nearest_food_coords['y'] < head_coords['y']:
+                if is_safe(head_coords['x'], head_coords['y'] - 1, data['board']):
+                    return MoveResponse('up')
+            elif nearest_food_coords['y'] > head_coords['y']:
+                if is_safe(head_coords['x'], head_coords['y'] + 1, data['board']):
+                    return MoveResponse('down')
 
     desired = ['up', 'right']
     random.shuffle(desired)
@@ -71,51 +87,6 @@ def move():
     
     print "FALL THROUGH"
     return MoveResponse('down')
-
-
-    # print head_coords
-    # print right_coords
-    # print left_coords
-    # return MoveResponse('right')
-
-    # diff_x = board_max_x - 1 - head_coords['x']
-    # diff_y = head_coords['y']
-
-    # in_top_right = any([
-    #     (b['x'] == (board_max_x - 1) and b['y'] == 0)
-    #     for b in data['you']['body']
-    # ])
-
-    # print "Board:", board_max_x, board_max_x
-    # print "Head: ", head_coords['x'], head_coords['y']
-    # print "Diff: ", diff_x, diff_y
-    # print "TopR: ", in_top_right
-    
-    # if in_top_right:
-    #     can_go_down = not any([
-    #         (b['x'] == (board_max_x - 1) and b['y'] == 1)
-    #         for b in data['you']['body']
-    #     ])
-    #     if can_go_down:
-    #         return MoveResponse('down')
-        
-    #     can_go_left = not any([
-    #         (b['x'] == (board_max_x - 2) and b['y'] == 0)
-    #         for b in data['you']['body']
-    #     ])
-    #     if can_go_left:
-    #         return MoveResponse('left')
-        
-    #     if head_coords['x'] > board_max_x - 2:
-    #         return MoveResponse('left')
-    #     if head_coords['y'] < 1:
-    #         return MoveResponse('down')
-
-    # if diff_x > diff_y:
-    #     return MoveResponse('right')
-    # if diff_y > diff_x:
-    #     return MoveResponse('up')
-    # return MoveResponse(random.choice(['up', 'right']))
 
 
 @bottle.post('/end')
@@ -140,6 +111,20 @@ def is_safe(x, y, board):
     
     return True
 
+
+def get_nearest_food(head, board):
+    if len(board['food']) == 0:
+        return None
+    
+    distances = [
+        (i, abs(head['x'] - f['x']) + abs(head['y'] - f['y']))
+        for i, f in enumerate(board['food'])
+    ]
+    distances.sort(key=lambda x: x[1])
+    
+    nearest_food_coords = board['food'][distances[0][0]]
+    print "TARGET FOOD:", nearest_food_coords
+    return nearest_food_coords
 
 
 # Expose WSGI app (so gunicorn can find it)
