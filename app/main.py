@@ -39,8 +39,12 @@ def move():
 
     head_coords = data['you']['body'][0]   
 
-    diff_x = board_max_x - head_coords['x']
+    diff_x = board_max_x - 1 - head_coords['x']
     diff_y = head_coords['y']
+
+    print "Board:", board_max_x, board_max_x
+    print "Head: ", head_coords['x'], head_coords['y']
+    print "Diff: ", diff_x, diff_y
 
     if diff_x > diff_y:
         return MoveResponse('right')
