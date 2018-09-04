@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+echo "Running development server..."
+docker run --rm -it \
+    --name found-a-snake \
+    -v "$PWD":/usr/src \
+    -w /usr/src \
+    -p 8080:8080 \
+    python:2.7-slim /bin/sh -c "\
+        pip install --upgrade pip && \
+        pip install -r requirements.dev.txt && \
+        python app/main.py"
