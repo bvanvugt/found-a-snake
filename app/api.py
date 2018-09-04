@@ -4,6 +4,7 @@ from bottle import HTTPResponse
 
 class MoveResponse(HTTPResponse):
     def __init__(self, move):
+        print "Moving", move
         assert move in ['up', 'down', 'left', 'right'], \
             "Move must be one of [up, down, left, right]"
 
