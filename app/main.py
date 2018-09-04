@@ -49,7 +49,7 @@ def move():
     right_coords = head_coords.copy()
     right_coords['x'] = head_coords['x'] + 1
 
-    if life <= max(data['board']['width'], data['board']['height']):
+    if life <= (max(data['board']['width'], data['board']['height']) * 2):
         print "TRY TO EAT!"
         nearest_food_coords = get_nearest_food(head_coords, data['board'])
         
